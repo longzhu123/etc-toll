@@ -1,0 +1,17 @@
+drop table if exists `etc_toll_test`;
+create table `etc_toll_test`  (
+  `id` varchar(32) character set utf8 collate utf8_general_ci not null comment '编号',
+  `name` varchar(255) character set utf8 collate utf8_general_ci not null comment '名称',
+  `phone` varchar(50) character set utf8 collate utf8_general_ci not null comment '手机号',
+  `email` varchar(50) character set utf8 collate utf8_general_ci not null comment '邮箱',
+  `age` int(11) not null comment '年龄',
+  `sex` varchar(50) character set utf8 collate utf8_general_ci not null comment '性别',
+  `about_file` varchar(500) character set utf8 collate utf8_general_ci not null comment '相关附件',
+  `create_time` datetime(0) null default null comment '创建时间',
+  `create_user_id` int(11) null default null comment '创建用户id',
+  `update_time` datetime(0) null default null comment '修改时间',
+  `update_user_id` int(11) null default null comment '修改用户id',
+  `del` int(4) null default null comment '是否删除(0.未删除  1.已删除)',
+  `remark` varchar(50) character set utf8 collate utf8_general_ci null default null comment '备注',
+  primary key (`id`) using btree
+) engine = innodb character set = utf8 collate = utf8_general_ci comment = '停车场测试表' row_format = dynamic;

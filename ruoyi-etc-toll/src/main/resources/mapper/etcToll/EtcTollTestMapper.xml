@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.etc.toll.mapper.EtcTollTestMapper">
+
+    <resultMap type="com.ruoyi.etc.toll.domain.EtcTollTest" id="EtcTollTestResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="aboutFile" column="about_file"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="del" column="del"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="sql">
+      select
+          etc_toll_test.id,
+          etc_toll_test.name,
+          etc_toll_test.phone,
+          etc_toll_test.email,
+          etc_toll_test.age,
+          etc_toll_test.sex,
+          etc_toll_test.about_file,
+          etc_toll_test.create_time,
+          etc_toll_test.create_user_id,
+          etc_toll_test.update_time,
+          etc_toll_test.update_user_id,
+          etc_toll_test.del,
+          etc_toll_test.remark
+      from etc_toll_test
+    </sql>
+
+    <!-- 查询停车场测试列表 -->
+    <select id="selectEtcTollTestList" parameterType="com.ruoyi.etc.toll.domain.EtcTollTest"
+            resultMap="EtcTollTestResult">
+        <include refid="sql"/>
+        <where>
+            <if test="name != null  and name != ''">
+                and etc_toll_test.name like concat('%', #{name}, '%')
+            </if>
+            <if test="phone != null  and phone != ''">
+                and etc_toll_test.phone = #{phone}
+            </if>
+            <if test="email != null  and email != ''">
+                and etc_toll_test.email = #{email}
+            </if>
+            <if test="age != null ">
+                and etc_toll_test.age = #{age}
+            </if>
+            <if test="sex != null  and sex != ''">
+                and etc_toll_test.sex = #{sex}
+            </if>
+            <if test="aboutFile != null  and aboutFile != ''">
+                and etc_toll_test.about_file = #{aboutFile}
+            </if>
+            <if test="createUserId != null ">
+                and etc_toll_test.create_user_id = #{createUserId}
+            </if>
+            <if test="updateUserId != null ">
+                and etc_toll_test.update_user_id = #{updateUserId}
+            </if>
+            <if test="del != null ">
+                and etc_toll_test.del = #{del}
+            </if>
+        </where>
+        order by etc_toll_test.create_time desc
+    </select>
+
+
+    <!-- 批量修改停车场测试 -->
+    <update id="batchUpdateEtcTollTest" parameterType="com.ruoyi.etc.toll.domain.EtcTollTest">
+        update etc_toll_test
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},
+            </if>
+            <if test="phone != null  and phone != ''">phone = #{phone},
+            </if>
+            <if test="email != null  and email != ''">email = #{email},
+            </if>
+            <if test="age != null ">age = #{age},
+            </if>
+            <if test="sex != null  and sex != ''">sex = #{sex},
+            </if>
+            <if test="aboutFile != null  and aboutFile != ''">about_file = #{aboutFile},
+            </if>
+            <if test="createTime != null ">create_time = #{createTime},
+            </if>
+            <if test="createUserId != null ">create_user_id = #{createUserId},
+            </if>
+            <if test="updateTime != null ">update_time = #{updateTime},
+            </if>
+            <if test="updateUserId != null ">update_user_id = #{updateUserId},
+            </if>
+            <if test="del != null ">del = #{del},
+            </if>
+            <if test="remark != null  and remark != ''">remark = #{remark},
+            </if>
+        </trim>
+        where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

@@ -1,0 +1,220 @@
+package ${packageName}.service;
+
+import java.util.List;
+    #if($table.tree)
+    import java.util.ArrayList;
+
+
+    import com.ruoyi.common.core.domain.Ztree;
+    #end
+    #foreach ($column in $columns)
+        #if($column.javaField == 'createTime' || $column.javaField == 'updateTime')
+        import com.ruoyi.common.utils.DateUtils;
+            #break
+        #end
+    #end
+#foreach($column in $columns)
+    #if($column.htmlType == "file" && $column.required)
+            import com.ruoyi.system.service.ISysFileInfoService;
+        #break
+    #end
+#end
+import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.common.utils.StringUtils;
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
+import com.ruoyi.common.constant.Constants;
+import org.springframework.stereotype.Service;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import com.ruoyi.common.core.text.Convert;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+
+/**
+ * ${functionName}Service
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Slf4j
+@Service
+public class ${ClassName}Service {
+
+    @Autowired
+    private ${ClassName}Mapper ${className}Mapper;
+
+#foreach($column in $columns)
+    #if($column.htmlType == "file" && $column.required)
+        @Autowired
+        private ISysFileInfoService sysFileInfoService;
+        #break
+    #end
+#end
+
+    /**
+     * 查询${functionName}
+     *
+     * @param ${pkColumn.javaField}
+     * @return
+     */
+    public ${ClassName} select${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField}) {
+        log.info("查询${functionName},请求参数:" + JSON.toJSONString(${pkColumn.javaField}));
+        return ${className}Mapper.selectByPrimaryKey(${pkColumn.javaField});
+    }
+
+    /**
+     * 查询${functionName}列表
+     *
+     * @param ${className}
+     * @return
+     */
+    public List<${ClassName}> select${ClassName}List(${ClassName} ${className}) {
+        ${className}.setDel(Constants.DEL_STATUS_OK);
+        log.info("查询${functionName}列表,请求参数:" + JSON.toJSONString(${className}));
+        return ${className}Mapper.select${ClassName}List(${className});
+    }
+
+    /**
+     * 新增${functionName}
+     *
+     * @param ${className}
+     * @return
+     */
+    @Transactional(propagation= Propagation.REQUIRED)
+    public AjaxResult insert${ClassName}(${ClassName} ${className}) {
+        try{
+            #foreach($column in $columns)
+                #if($column.htmlType == "file" && $column.required)
+                    if (StringUtils.isEmpty(${className}.getAboutFile())) {
+                        return AjaxResult.error("${column.columnComment}不能为空");
+                    }
+                #end
+            #end
+            SysUser sysUser = ShiroUtils.getSysUser();
+            ${className}.setId(StringUtils.getUUID());
+            #foreach($column in $columns)
+                #if($column.htmlType == "file" && $column.required)
+                    #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+                    ${className}.set${AttrName}(sysFileInfoService.getConvertFileStr(sysUser, ${className}.get${AttrName}()));
+                #end
+            #end
+            ${className}.setCreateTime(DateUtils.getNowDate());
+            ${className}.setCreateUserId(sysUser.getUserId().intValue());
+            ${className}.setDel(Constants.DEL_STATUS_OK);
+            log.info("新增${functionName},请求参数:" + JSON.toJSONString(${className}));
+            return ${className}Mapper.insertSelective(${className}) > 0 ? AjaxResult.success() : AjaxResult.error();
+        }catch (Exception e){
+            e.printStackTrace();
+            return AjaxResult.error(e.getMessage());
+        }
+
+    }
+
+    /**
+     * 修改${functionName}
+     *
+     * @param ${className}
+     * @return
+     */
+    @Transactional(propagation= Propagation.REQUIRED)
+    public AjaxResult update${ClassName}(${ClassName} ${className}) {
+        try{
+            #foreach($column in $columns)
+                #if($column.htmlType == "file" && $column.required)
+                    if (StringUtils.isEmpty(${className}.getAboutFile())) {
+                        return AjaxResult.error("${column.columnComment}不能为空");
+                    }
+                #end
+            #end
+            SysUser sysUser = ShiroUtils.getSysUser();
+            //处理文件相关操作
+            //1.先删除文件,在添加文件记录
+            ${ClassName} ${className}One = ${className}Mapper.selectByPrimaryKey(${className}.getId());
+            #foreach($column in $columns)
+                #if($column.htmlType == "file" && $column.required)
+                #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+                    //获取最新${column.columnComment}字符串
+                    String $column.javaField = sysFileInfoService.serviceUpdateFile(sysUser,${className}One.get${AttrName}(),${className}.get${AttrName}());
+                #end
+            #end
+
+            #foreach($column in $columns)
+                #if($column.htmlType == "file" && $column.required)
+                    #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+                    ${className}.set${AttrName}($column.javaField);
+                #end
+            #end
+            ${className}.setUpdateTime(DateUtils.getNowDate());
+            ${className}.setUpdateUserId(sysUser.getUserId().intValue());
+            log.info("修改${functionName},请求参数:" + JSON.toJSONString(${className}));
+            return ${className}Mapper.updateByPrimaryKeySelective(${className}) > 0 ? AjaxResult.success() : AjaxResult.error();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return AjaxResult.error(e.getMessage());
+        }
+    }
+
+    /**
+     * 批量删除${functionName}对象
+     *
+     * @param ids
+     * @return
+     */
+    public int delete${ClassName}ByIds(String ids) {
+        SysUser sysUser = ShiroUtils.getSysUser();
+        ${ClassName} ${className} =new ${ClassName}();
+        ${className}.setDel(Constants.DEL_STATUS_NO);
+        ${className}.setIds(Convert.toStrArray(ids));
+        ${className}.setUpdateTime(DateUtils.getNowDate());
+        ${className}.setUpdateUserId(sysUser.getUserId().intValue());
+        log.info("批量删除${functionName}对象,请求参数:" + JSON.toJSONString(${className}));
+        return ${className}Mapper.batchUpdate${ClassName}(${className});
+    }
+
+    /**
+     * 删除${functionName}信息
+     *
+     * @param ${pkColumn.javaField}
+     * @return
+     */
+    public int delete${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField}) {
+        SysUser sysUser = ShiroUtils.getSysUser();
+        ${ClassName} ${className} =new ${ClassName}();
+        ${className}.setDel(Constants.DEL_STATUS_NO);
+        ${className}.setId(${pkColumn.javaField});
+        ${className}.setUpdateTime(DateUtils.getNowDate());
+        ${className}.setUpdateUserId(sysUser.getUserId().intValue());
+        log.info("删除${functionName}信息,请求参数:" + JSON.toJSONString(${className}));
+        return ${className}Mapper.deleteByPrimaryKey(${className});
+    }
+    #if($table.tree)
+
+        /**
+         * 查询${functionName}树列表
+         *
+         * @return
+         */
+        public List<Ztree> select${ClassName}Tree() {
+            List<${ClassName}> ${className}List = ${className}Mapper.select${ClassName}List(new ${ClassName}());
+            List<Ztree> ztrees = new ArrayList<Ztree>();
+            for (${ClassName} ${className} :${className}List)
+            {
+                Ztree ztree = new Ztree();
+                #set($TreeCode=$treeCode.substring(0,1).toUpperCase() + ${treeCode.substring(1)})
+                #set($TreeParentCode=$treeParentCode.substring(0,1).toUpperCase() + ${treeParentCode.substring(1)})
+                #set($TreeName=$treeName.substring(0,1).toUpperCase() + ${treeName.substring(1)})
+                ztree.setId(${className}.get${TreeCode}());
+                ztree.setpId(${className}.get${TreeParentCode}());
+                ztree.setName(${className}.get${TreeName}());
+                ztree.setTitle(${className}.get${TreeName}());
+                ztrees.add(ztree);
+            }
+            return ztrees;
+        }
+    #end
+}

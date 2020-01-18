@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysFileInfoMapper">
+
+    <resultMap type="com.ruoyi.system.domain.SysFileInfo" id="SysFileInfoResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="realName" column="real_name"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="extension" column="extension"/>
+        <result property="contentType" column="content_type"/>
+        <result property="directory" column="directory"/>
+        <result property="visitUrl" column="visit_url"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="del" column="del"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="sql">
+      select
+          sys_file_info.id,
+          sys_file_info.name,
+          sys_file_info.real_name,
+          sys_file_info.file_size,
+          sys_file_info.extension,
+          sys_file_info.content_type,
+          sys_file_info.directory,
+          sys_file_info.visit_url,
+          sys_file_info.create_time,
+          sys_file_info.create_user_id,
+          sys_file_info.update_time,
+          sys_file_info.update_user_id,
+          sys_file_info.del,
+          sys_file_info.remark
+      from sys_file_info
+    </sql>
+
+    <!-- 查询附件信息列表 -->
+    <select id="selectSysFileInfoList" parameterType="com.ruoyi.system.domain.SysFileInfo"
+            resultMap="SysFileInfoResult">
+        <include refid="sql"/>
+        <where>
+            <if test="name != null  and name != ''">
+                and sys_file_info.name like concat('%', #{name}, '%')
+            </if>
+            <if test="realName != null  and realName != ''">
+                and sys_file_info.real_name like concat('%', #{realName}, '%')
+            </if>
+            <if test="fileSize != null ">
+                and sys_file_info.file_size = #{fileSize}
+            </if>
+            <if test="extension != null  and extension != ''">
+                and sys_file_info.extension = #{extension}
+            </if>
+            <if test="contentType != null  and contentType != ''">
+                and sys_file_info.content_type = #{contentType}
+            </if>
+            <if test="directory != null  and directory != ''">
+                and sys_file_info.directory = #{directory}
+            </if>
+            <if test="visitUrl != null  and visitUrl != ''">
+                and sys_file_info.visit_url = #{visitUrl}
+            </if>
+            <if test="createUserId != null ">
+                and sys_file_info.create_user_id = #{createUserId}
+            </if>
+            <if test="updateUserId != null ">
+                and sys_file_info.update_user_id = #{updateUserId}
+            </if>
+            <if test="del != null ">
+                and sys_file_info.del = #{del}
+            </if>
+        </where>
+        order by sys_file_info.create_time desc
+    </select>
+
+
+    <!-- 批量修改附件信息 -->
+    <update id="batchUpdateSysFileInfo" parameterType="com.ruoyi.system.domain.SysFileInfo">
+        update sys_file_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},
+            </if>
+            <if test="realName != null  and realName != ''">real_name = #{realName},
+            </if>
+            <if test="fileSize != null ">file_size = #{fileSize},
+            </if>
+            <if test="extension != null  and extension != ''">extension = #{extension},
+            </if>
+            <if test="contentType != null  and contentType != ''">content_type = #{contentType},
+            </if>
+            <if test="directory != null  and directory != ''">directory = #{directory},
+            </if>
+            <if test="visitUrl != null  and visitUrl != ''">
+                visit_url = #{visitUrl},
+            </if>
+            <if test="createTime != null ">create_time = #{createTime},
+            </if>
+            <if test="createUserId != null ">create_user_id = #{createUserId},
+            </if>
+            <if test="updateTime != null ">update_time = #{updateTime},
+            </if>
+            <if test="updateUserId != null ">update_user_id = #{updateUserId},
+            </if>
+            <if test="del != null ">del = #{del},
+            </if>
+            <if test="remark != null  and remark != ''">remark = #{remark},
+            </if>
+        </trim>
+        where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <insert id="insertSysFileInfoList">
+        insert into sys_file_info
+        (id,create_time,create_user_id,update_time,update_user_id,del,remark,name,real_name,file_size,extension,content_type,directory,visit_url
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.createTime},
+            #{item.createUserId},
+            #{item.updateTime},
+            #{item.updateUserId},
+            #{item.del},
+            #{item.remark},
+            #{item.name},
+            #{item.realName},
+            #{item.fileSize},
+            #{item.extension},
+            #{item.contentType},
+            #{item.directory},
+            #{item.visitUrl}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectSysFileInfoListByIds" resultMap="SysFileInfoResult">
+        <include refid="sql"/>
+        where sys_file_info.id in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        <if test="del != null "> and sys_file_info.del = #{del} </if>
+        order by sys_file_info.create_time desc
+    </select>
+</mapper>

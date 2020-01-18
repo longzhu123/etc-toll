@@ -1,0 +1,28 @@
+package ${packageName}.mapper;
+
+import com.ruoyi.common.baseMapper.BaseMapper;
+import ${packageName}.domain.${ClassName};
+import java.util.List;
+
+/**
+ * ${functionName}Mapper
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper extends BaseMapper<${ClassName}> {
+
+    /**
+     * 查询${functionName}列表
+     * @param ${className}
+     */
+    List<${ClassName}> select${ClassName}List(${ClassName} ${className});
+
+
+    /**
+     * 批量修改${functionName}
+     * @param ${className}
+     */
+    int batchUpdate${ClassName}(${ClassName} ${className});
+
+}

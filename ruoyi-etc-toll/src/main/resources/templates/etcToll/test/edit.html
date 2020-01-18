@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改停车场测试')"/>
+    <th:block th:include="include :: select2-css"/>
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-test-edit" th:object="${etcTollTest}" enctype="multipart/form-data">
+        <input name="id" th:field="*{id}" type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>名称：</label>
+            <div class="col-sm-8">
+                <input name="name" placeholder="请输入名称" th:field="*{name}"
+                       class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>手机号：</label>
+            <div class="col-sm-8">
+                <input name="phone" placeholder="请输入手机号" th:field="*{phone}"
+                       class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>邮箱：</label>
+            <div class="col-sm-8">
+                <input name="email" placeholder="请输入邮箱" th:field="*{email}"
+                       class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>年龄：</label>
+            <div class="col-sm-8">
+                <input name="age" placeholder="请输入年龄" th:field="*{age}"
+                       class="form-control" type="text" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>性别：</label>
+            <div class="col-sm-8">
+                <select id="sex" th:with="type=${@dict.getType('sys_user_sex')}" name="sex" class="form-control m-b"
+                        required>
+                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
+                            th:value="${dict.dictValue}" th:field="*{sex}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"><span style="color: red; ">*</span>相关附件：</label>
+            <div class="col-sm-8">
+                <input name="aboutFile" id="aboutFile" type="hidden" th:field="*{aboutFile}" required/>
+                <input id="aboutMultipartFile" name="files" multiple placeholder="请输入相关附件"
+                       data-min-file-count="1"
+                       type="file">
+            </div>
+        </div>
+    </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: select2-js"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script type="text/javascript" th:inline="javascript">
+
+    $("#sex").select2();
+    var prefix = ctx + "etcToll/test";
+
+    $.file.getFileByIds([[${etcTollTest.aboutFile}]], function (aboutFileSysFileInfos) {
+        $.file.editFileUpload("#aboutMultipartFile", "#aboutFile", aboutFileSysFileInfos);
+    });
+
+
+    $("#form-test-edit").validate({
+        onkeyup: false,
+        rules: {
+            phone: {isPhone: true},
+            email: {email: true},
+            age: {digits: true}
+        },
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-test-edit').serialize());
+        }
+    }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.etc.toll.mapper.EtcTollDemoMapper">
+
+    <resultMap type="com.ruoyi.etc.toll.domain.EtcTollDemo" id="EtcTollDemoResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="serviceFile" column="service_file"/>
+        <result property="aboutFile" column="about_file"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="del" column="del"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="sql">
+      select
+          etc_toll_demo.id,
+              etc_toll_demo.name,
+              etc_toll_demo.phone,
+              etc_toll_demo.email,
+              etc_toll_demo.age,
+              etc_toll_demo.sex,
+              etc_toll_demo.service_file,
+              etc_toll_demo.about_file,
+              etc_toll_demo.create_time,
+              etc_toll_demo.create_user_id,
+              etc_toll_demo.update_time,
+              etc_toll_demo.update_user_id,
+              etc_toll_demo.del,
+              etc_toll_demo.remark    
+      from etc_toll_demo
+    </sql>
+
+    <!-- 查询停车场Demo列表 -->
+    <select id="selectEtcTollDemoList" parameterType="com.ruoyi.etc.toll.domain.EtcTollDemo"
+            resultMap="EtcTollDemoResult">
+        <include refid="sql"/>
+        <where>
+            <if test="name != null  and name != ''">
+                and etc_toll_demo.name like concat('%', #{name}, '%')
+            </if>
+            <if test="phone != null  and phone != ''">
+                and etc_toll_demo.phone like concat('%', #{phone}, '%')
+            </if>
+            <if test="email != null  and email != ''">
+                and etc_toll_demo.email like concat('%', #{email}, '%')
+            </if>
+            <if test="sex != null  and sex != ''">
+                and etc_toll_demo.sex = #{sex}
+            </if>
+        </where>
+        order by etc_toll_demo.create_time desc
+    </select>
+
+
+    <!-- 批量修改停车场Demo -->
+    <update id="batchUpdateEtcTollDemo" parameterType="com.ruoyi.etc.toll.domain.EtcTollDemo">
+        update etc_toll_demo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},
+            </if>
+            <if test="phone != null  and phone != ''">phone = #{phone},
+            </if>
+            <if test="email != null  and email != ''">email = #{email},
+            </if>
+            <if test="age != null ">age = #{age},
+            </if>
+            <if test="sex != null  and sex != ''">sex = #{sex},
+            </if>
+            <if test="serviceFile != null  and serviceFile != ''">service_file = #{serviceFile},
+            </if>
+            <if test="aboutFile != null  and aboutFile != ''">about_file = #{aboutFile},
+            </if>
+            <if test="createTime != null ">create_time = #{createTime},
+            </if>
+            <if test="createUserId != null ">create_user_id = #{createUserId},
+            </if>
+            <if test="updateTime != null ">update_time = #{updateTime},
+            </if>
+            <if test="updateUserId != null ">update_user_id = #{updateUserId},
+            </if>
+            <if test="del != null ">del = #{del},
+            </if>
+            <if test="remark != null  and remark != ''">remark = #{remark},
+            </if>
+        </trim>
+        where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>
