@@ -539,27 +539,6 @@ CREATE TABLE `sys_file_info`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '附件信息表' ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Table structure for sys_file_info_copy1
--- ----------------------------
-DROP TABLE IF EXISTS `sys_file_info_copy1`;
-CREATE TABLE `sys_file_info_copy1`  (
-  `id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '编号',
-  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件名称',
-  `real_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件真实名称',
-  `file_size` bigint(10) NOT NULL COMMENT '文件大小(KB)',
-  `extension` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件类型',
-  `content_type` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '文件后缀类型',
-  `directory` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '存储路径',
-  `visit_url` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '访问路径',
-  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `create_user_id` int(11) NULL DEFAULT NULL COMMENT '创建用户id',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
-  `update_user_id` int(11) NULL DEFAULT NULL COMMENT '修改用户id',
-  `del` int(4) NULL DEFAULT NULL COMMENT '是否删除(0.未删除  1.已删除)',
-  `remark` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '附件信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sys_job
