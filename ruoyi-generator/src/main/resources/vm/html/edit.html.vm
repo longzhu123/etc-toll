@@ -2,7 +2,12 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="include :: header('修改${functionName}')"/>
-    <th:block th:include="include :: select2-css"/>
+    #foreach($column in $columns)
+        #if($column.insert && !$column.superColumn && !$column.pk && $column.htmlType == "select")
+            <th:block th:include="include :: select2-css"/>
+            #break
+        #end
+    #end
     #foreach($column in $columns)
         #if($column.insert && !$column.superColumn && !$column.pk && $column.htmlType == "datetime")
             <th:block th:include="include :: datetimepicker-css"/>
@@ -135,7 +140,12 @@
     </form>
 </div>
 <th:block th:include="include :: footer"/>
-<th:block th:include="include :: select2-js"/>
+    #foreach($column in $columns)
+        #if($column.insert && !$column.superColumn && !$column.pk && $column.htmlType == "select")
+        <th:block th:include="include :: select2-js"/>
+            #break
+        #end
+    #end
     #foreach($column in $columns)
         #if($column.insert && !$column.superColumn && !$column.pk && $column.htmlType == "datetime")
         <th:block th:include="include :: datetimepicker-js"/>

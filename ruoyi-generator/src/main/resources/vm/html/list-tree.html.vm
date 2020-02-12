@@ -2,7 +2,12 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('${functionName}列表')"/>
-    <th:block th:include="include :: select2-css"/>
+    #foreach($column in $columns)
+        #if($column.insert && !$column.superColumn && !$column.pk && $column.htmlType == "select")
+            <th:block th:include="include :: select2-css"/>
+            #break
+        #end
+    #end
 </head>
 <body class="gray-bg">
 <div class="container-div">
@@ -84,7 +89,12 @@
     </div>
 </div>
 <th:block th:include="include :: footer"/>
-<th:block th:include="include :: select2-js"/>
+    #foreach($column in $columns)
+        #if($column.insert && !$column.superColumn && !$column.pk && $column.htmlType == "select")
+        <th:block th:include="include :: select2-js"/>
+            #break
+        #end
+    #end
 <script th:inline="javascript">
     var addFlag = [[${@permission.hasPermi('${permissionPrefix}:add')}]];
     var editFlag = [[${@permission.hasPermi('${permissionPrefix}:edit')}]];
