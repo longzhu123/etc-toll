@@ -5,11 +5,17 @@ import com.ruoyi.etc.toll.domain.EtcTollDemo;
 
 import java.util.List;
 
+
+import com.ruoyi.common.baseMapper.BaseMapper;
+import com.ruoyi.etc.toll.domain.EtcTollDemo;
+
+import java.util.List;
+
 /**
  * 停车场DemoMapper
  *
  * @author yangjie
- * @date 2020-01-18
+ * @date 2020-02-13
  */
 public interface EtcTollDemoMapper extends BaseMapper<EtcTollDemo> {
 
@@ -27,5 +33,13 @@ public interface EtcTollDemoMapper extends BaseMapper<EtcTollDemo> {
      * @param etcTollDemo
      */
     int batchUpdateEtcTollDemo(EtcTollDemo etcTollDemo);
+
+
+    /**
+     * 根据ids查询停车场Demo
+     *
+     * @param ids
+     */
+    public int selectEtcTollDemoByIds(String[] ids);
 
 }

@@ -22,19 +22,19 @@
     <sql id="sql">
       select
           etc_toll_demo.id,
-              etc_toll_demo.name,
-              etc_toll_demo.phone,
-              etc_toll_demo.email,
-              etc_toll_demo.age,
-              etc_toll_demo.sex,
-              etc_toll_demo.service_file,
-              etc_toll_demo.about_file,
-              etc_toll_demo.create_time,
-              etc_toll_demo.create_user_id,
-              etc_toll_demo.update_time,
-              etc_toll_demo.update_user_id,
-              etc_toll_demo.del,
-              etc_toll_demo.remark    
+          etc_toll_demo.name,
+          etc_toll_demo.phone,
+          etc_toll_demo.email,
+          etc_toll_demo.age,
+          etc_toll_demo.sex,
+          etc_toll_demo.service_file,
+          etc_toll_demo.about_file,
+          etc_toll_demo.create_time,
+          etc_toll_demo.create_user_id,
+          etc_toll_demo.update_time,
+          etc_toll_demo.update_user_id,
+          etc_toll_demo.del,
+          etc_toll_demo.remark
       from etc_toll_demo
     </sql>
 
@@ -96,5 +96,16 @@
             #{id}
         </foreach>
     </update>
+
+
+
+    <!-- 根据ids查询停车场Demo -->
+    <select id="selectEtcTollDemoByIds" parameterType="String" resultMap="EtcTollDemoResult">
+        <include refid="sql"/>
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
 </mapper>

@@ -28,17 +28,8 @@ public interface ${ClassName}Mapper extends BaseMapper<${ClassName}> {
 
 
     /**
-     * 批量删除${functionName}
-     *
-     * @param ${pkColumn.javaField}s 需要删除的数据ID
-     * @return 结果
-     */
-    public int delete${ClassName}ByIds(String[] ${pkColumn.javaField}s);
-
-
-    /**
      * 根据ids查询${functionName}
-     * @param ${className}
+     * @param ${pkColumn.javaField}s 需要删除的数据ID
      */
     public int select${ClassName}ByIds(String[] ${pkColumn.javaField}s);
 
