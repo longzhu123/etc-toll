@@ -94,4 +94,23 @@
         </foreach>
     </update>
 
+
+
+    <!-- 批量删除${functionName} -->
+    <delete id="delete${ClassName}ByIds" parameterType="String">
+        delete from ${tableName} where ${pkColumn.columnName} in
+        <foreach item="${pkColumn.javaField}" collection="array" open="(" separator="," close=")">
+            #{${pkColumn.javaField}}
+        </foreach>
+    </delete>
+
+
+    <!-- 根据ids查询${functionName} -->
+    <select id="select${ClassName}ByIds" parameterType="String" resultMap="${ClassName}Result">
+        <include refid="sql"/> where ${pkColumn.columnName} in
+        <foreach item="${pkColumn.javaField}" collection="array" open="(" separator="," close=")">
+            #{${pkColumn.javaField}}
+        </foreach>
+    </select>
+
 </mapper>
