@@ -27,6 +27,7 @@ public interface ${ClassName}Mapper extends BaseMapper<${ClassName}> {
 
 
 
+
     /**
      * 根据ids查询${functionName}
      * @param ${className}
