@@ -29,8 +29,8 @@ public interface ${ClassName}Mapper extends BaseMapper<${ClassName}> {
 
     /**
      * 根据ids查询${functionName}
-     * @param ${pkColumn.javaField}s 需要删除的数据ID
+     * @param ${className}
      */
-    public int select${ClassName}ByIds(String[] ${pkColumn.javaField}s);
+    public int select${ClassName}ByIds(${ClassName} ${className});
 
 }
