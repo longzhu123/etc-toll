@@ -31,6 +31,6 @@ public interface ${ClassName}Mapper extends BaseMapper<${ClassName}> {
      * 根据ids查询${functionName}
      * @param ${className}
      */
-    public int select${ClassName}ByIds(${ClassName} ${className});
+    public List<${ClassName}> select${ClassName}ByIds(${ClassName} ${className});
 
 }
