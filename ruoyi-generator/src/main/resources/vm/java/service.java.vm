@@ -165,7 +165,8 @@ public class ${ClassName}Service {
      * @param ids
      * @return
      */
-    public int delete${ClassName}ByIds(String ids) {
+    @Transactional(propagation= Propagation.REQUIRED)
+    public AjaxResult delete${ClassName}ByIds(String ids) {
         SysUser sysUser = ShiroUtils.getSysUser();
         ${ClassName} ${className} =new ${ClassName}();
         ${className}.setDel(Constants.DEL_STATUS_NO);
@@ -173,7 +174,7 @@ public class ${ClassName}Service {
         ${className}.setUpdateTime(DateUtils.getNowDate());
         ${className}.setUpdateUserId(sysUser.getUserId().intValue());
         log.info("批量删除${functionName}对象,请求参数:" + JSON.toJSONString(${className}));
-        return ${className}Mapper.batchUpdate${ClassName}(${className});
+        return ${className}Mapper.batchUpdate${ClassName}(${className}) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
     /**
@@ -182,15 +183,16 @@ public class ${ClassName}Service {
      * @param ${pkColumn.javaField}
      * @return
      */
-    public int delete${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField}) {
+    @Transactional(propagation= Propagation.REQUIRED)
+    public AjaxResult delete${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField}) {
         SysUser sysUser = ShiroUtils.getSysUser();
         ${ClassName} ${className} =new ${ClassName}();
-        ${className}.setDel(Constants.DEL_STATUS_NO);
         ${className}.setId(${pkColumn.javaField});
+        ${className}.setDel(Constants.DEL_STATUS_NO);
         ${className}.setUpdateTime(DateUtils.getNowDate());
         ${className}.setUpdateUserId(sysUser.getUserId().intValue());
         log.info("删除${functionName}信息,请求参数:" + JSON.toJSONString(${className}));
-        return ${className}Mapper.deleteByPrimaryKey(${className});
+        return ${className}Mapper.updateByPrimaryKey(${className}) > 0 ? AjaxResult.success() : AjaxResult.error();
     }
     #if($table.tree)
 

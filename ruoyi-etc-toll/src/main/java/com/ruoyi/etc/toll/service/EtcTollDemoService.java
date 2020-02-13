@@ -132,7 +132,8 @@ public class EtcTollDemoService {
      * @param ids
      * @return
      */
-    public int deleteEtcTollDemoByIds(String ids) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AjaxResult deleteEtcTollDemoByIds(String ids) {
         SysUser sysUser = ShiroUtils.getSysUser();
         EtcTollDemo etcTollDemo = new EtcTollDemo();
         etcTollDemo.setDel(Constants.DEL_STATUS_NO);
@@ -140,7 +141,7 @@ public class EtcTollDemoService {
         etcTollDemo.setUpdateTime(DateUtils.getNowDate());
         etcTollDemo.setUpdateUserId(sysUser.getUserId().intValue());
         log.info("批量删除停车场Demo对象,请求参数:" + JSON.toJSONString(etcTollDemo));
-        return etcTollDemoMapper.batchUpdateEtcTollDemo(etcTollDemo);
+        return etcTollDemoMapper.batchUpdateEtcTollDemo(etcTollDemo)> 0 ? AjaxResult.success() : AjaxResult.error();
     }
 
     /**
@@ -149,7 +150,8 @@ public class EtcTollDemoService {
      * @param id
      * @return
      */
-    public int deleteEtcTollDemoById(String id) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public AjaxResult deleteEtcTollDemoById(String id) {
         SysUser sysUser = ShiroUtils.getSysUser();
         EtcTollDemo etcTollDemo = new EtcTollDemo();
         etcTollDemo.setDel(Constants.DEL_STATUS_NO);
@@ -157,6 +159,6 @@ public class EtcTollDemoService {
         etcTollDemo.setUpdateTime(DateUtils.getNowDate());
         etcTollDemo.setUpdateUserId(sysUser.getUserId().intValue());
         log.info("删除停车场Demo信息,请求参数:" + JSON.toJSONString(etcTollDemo));
-        return etcTollDemoMapper.deleteByPrimaryKey(etcTollDemo);
+        return etcTollDemoMapper.updateByPrimaryKey(etcTollDemo)> 0 ? AjaxResult.success() : AjaxResult.error();
     }
 }

@@ -145,7 +145,7 @@ public class ${ClassName}Controller extends BaseController {
         @PostMapping("/remove")
         @ResponseBody
         public AjaxResult remove(String ids) {
-            return toAjax(${className}Service.delete${ClassName}ByIds(ids));
+            return ${className}Service.delete${ClassName}ByIds(ids);
         }
     #elseif($table.tree)
         /**
@@ -156,7 +156,7 @@ public class ${ClassName}Controller extends BaseController {
         @GetMapping("/remove/{${pkColumn.javaField}}")
         @ResponseBody
         public AjaxResult remove(@PathVariable("${pkColumn.javaField}") ${pkColumn.javaType} ${pkColumn.javaField}) {
-            return toAjax(${className}Service.delete${ClassName}ById(${pkColumn.javaField}));
+            return ${className}Service.delete${ClassName}ById(${pkColumn.javaField});
         }
     #end
     #if($table.tree)

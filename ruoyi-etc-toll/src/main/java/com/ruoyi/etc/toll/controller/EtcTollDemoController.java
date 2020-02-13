@@ -109,6 +109,6 @@ public class EtcTollDemoController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids) {
-        return toAjax(etcTollDemoService.deleteEtcTollDemoByIds(ids));
+        return etcTollDemoService.deleteEtcTollDemoByIds(ids);
     }
 }
