@@ -345,8 +345,12 @@ var table = {
                 table.set();
                 $.modal.confirm("确定导出所有" + table.options.modalName + "吗？", function () {
                     var currentId = $.common.isEmpty(formId) ? $('form').attr('id') : formId;
+                    var params = $("#" + table.options.id).bootstrapTable('getOptions');
+                    var dataParam = $("#" + currentId).serializeArray();
+                    dataParam.push({"name": "orderByColumn", "value": params.sortName});
+                    dataParam.push({"name": "isAsc", "value": params.sortOrder});
                     $.modal.loading("正在导出数据，请稍后...");
-                    $.post(table.options.exportUrl, $("#" + currentId).serializeArray(), function (result) {
+                    $.post(table.options.exportUrl, dataParam, function (result) {
                         if (result.code == web_status.SUCCESS) {
                             window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
                         } else if (result.code == web_status.WARNING) {
@@ -581,9 +585,15 @@ var table = {
                     } else {
                         $("#" + tableId).bootstrapTable('refresh');
                     }
+                } else if (table.options.type == table_type.bootstrapTreeTable) {
+                    if ($.common.isEmpty(tableId)) {
+                        $("#" + table.options.id).bootstrapTreeTable('refresh', []);
+                    } else {
+                        $("#" + tableId).bootstrapTreeTable('refresh', []);
+                    }
                 }
             },
-            select2DefautSelect:function(id,defVal){
+            select2DefautSelect: function (id, defVal) {
                 $(id).val(defVal).select2({
                     width: "150px"
                 });
