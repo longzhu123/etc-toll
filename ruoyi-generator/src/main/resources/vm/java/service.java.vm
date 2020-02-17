@@ -234,13 +234,13 @@ public class ${ClassName}Service {
         #foreach($column in $columns)
             #if($column.javaType == "String" && $column.required)
                 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-                if (StringUtils.isEmpty(${className}.set$AttrName)){
+                if (StringUtils.isEmpty(${className}.get$AttrName())){
                 throw new BusinessException("${column.columnComment}不能为空");
             }
             #end
             #if($column.javaType != "String" && $column.required)
                 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-                if (Objects.isNull(${className}.set$AttrName)){
+                if (Objects.isNull(${className}.get$AttrName())){
                 throw new BusinessException("${column.columnComment}不能为空");
             }
             #end
