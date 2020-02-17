@@ -855,7 +855,6 @@ label {
     border: 0px;
 }
 
-
 .table-bordered table > thead > tr > th:first-child, .table-bordered table > tbody > tr > td:first-child {
     border-left: 1px solid #ddd;
 }
@@ -984,7 +983,6 @@ label {
 }
 
 .bootstrap-tree-table .treetable-tbody td {
-    overflow: hidden;
     border: 0 !important;
     border-left: 0px solid #e7eaec !important;
     border-bottom: 1px solid #e7eaec !important;
