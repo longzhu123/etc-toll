@@ -226,7 +226,7 @@ public class ${ClassName}Service {
     public void checkEdit${ClassName}Params(${ClassName} ${className},String code) {
         //修改操作,要判断Id是否为空
         if(code.equals(Constants.SERVEICE_OPERATE_UPDATE)){
-            if (StringUtils.isEmpty(etcTollDemo.getId())) {
+            if (StringUtils.isEmpty(${className}.getId())) {
                 throw new BusinessException("id不能为空");
             }
         }
