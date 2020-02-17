@@ -17,7 +17,8 @@
                                 </li>
                                 <li>
                                     菜单状态：
-                                    <select id="visible" name="visible" th:with="type=${@dict.getType('sys_show_hide')}">
+                                    <select id="visible" name="visible"
+                                            th:with="type=${@dict.getType('sys_show_hide')}">
                                         <option value="">所有</option>
                                         <option th:each="dict : ${type}" th:text="${dict.dictLabel}"
                                                 th:value="${dict.dictValue}"></option>
@@ -83,9 +84,8 @@
             $(function () {
 
                 $("#visible").select2({
-                    width:"150px"
+                    width: "150px"
                 });
-
 
 
                 var options = {
@@ -125,7 +125,10 @@
                             field: 'url',
                             title: '请求地址',
                             width: '15%',
-                            align: "left"
+                            align: "left",
+                            formatter: function (value, row, index) {
+                                return $.table.tooltip(value);
+                            }
                         },
                         {
                             title: '类型',
@@ -159,6 +162,9 @@
                             title: '权限标识',
                             width: '15%',
                             align: "left",
+                            formatter: function (value, row, index) {
+                                return $.table.tooltip(value);
+                            }
                         },
                         {
                             title: '操作',
