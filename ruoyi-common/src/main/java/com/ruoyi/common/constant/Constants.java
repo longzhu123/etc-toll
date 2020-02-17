@@ -72,4 +72,10 @@ public class Constants {
     public static final Integer DEL_STATUS_NO = 1;
 
     public static final String SPLIT_FILE_UUID = "2fd872b8933a4ea7bee38e1c7bd96feb";
+
+    //新增业务操作码
+    public static final String SERVEICE_OPERATE_ADD = "add" ;
+
+    //修改业务操作码
+    public static final String SERVEICE_OPERATE_UPDATE = "update" ;
 }

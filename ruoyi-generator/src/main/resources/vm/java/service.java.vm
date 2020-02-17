@@ -1,8 +1,10 @@
 package ${packageName}.service;
 
 import java.util.List;
+import java.util.Objects;
     #if($table.tree)
     import java.util.ArrayList;
+    import java.util.Objects;
 
 
     import com.ruoyi.common.core.domain.Ztree;
@@ -13,17 +15,18 @@ import java.util.List;
             #break
         #end
     #end
-#foreach($column in $columns)
-    #if($column.htmlType == "file" && $column.required)
-            import com.ruoyi.system.service.ISysFileInfoService;
-        #break
+    #foreach($column in $columns)
+        #if($column.htmlType == "file" && $column.required)
+        import com.ruoyi.system.service.ISysFileInfoService;
+            #break
+        #end
     #end
-#end
 import org.springframework.beans.factory.annotation.Autowired;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.exception.BusinessException;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import com.ruoyi.common.constant.Constants;
@@ -48,13 +51,13 @@ public class ${ClassName}Service {
     @Autowired
     private ${ClassName}Mapper ${className}Mapper;
 
-#foreach($column in $columns)
-    #if($column.htmlType == "file" && $column.required)
-        @Autowired
-        private ISysFileInfoService sysFileInfoService;
-        #break
+    #foreach($column in $columns)
+        #if($column.htmlType == "file" && $column.required)
+            @Autowired
+            private ISysFileInfoService sysFileInfoService;
+            #break
+        #end
     #end
-#end
 
     /**
      * 查询${functionName}
@@ -64,6 +67,9 @@ public class ${ClassName}Service {
      */
     public ${ClassName} select${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField}) {
         log.info("查询${functionName},请求参数:" + JSON.toJSONString(${pkColumn.javaField}));
+        if(StringUtils.isEmpty(id)){
+            throw new BusinessException("id不能为空");
+        }
         return ${className}Mapper.selectByPrimaryKey(${pkColumn.javaField});
     }
 
@@ -85,16 +91,10 @@ public class ${ClassName}Service {
      * @param ${className}
      * @return
      */
-    @Transactional(propagation= Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public AjaxResult insert${ClassName}(${ClassName} ${className}) {
-        try{
-            #foreach($column in $columns)
-                #if($column.htmlType == "file" && $column.required)
-                    if (StringUtils.isEmpty(${className}.getAboutFile())) {
-                        return AjaxResult.error("${column.columnComment}不能为空");
-                    }
-                #end
-            #end
+        try {
+            checkEdit${ClassName}Params(${className},Constants.SERVEICE_OPERATE_ADD);
             SysUser sysUser = ShiroUtils.getSysUser();
             ${className}.setId(StringUtils.getUUID());
             #foreach($column in $columns)
@@ -108,7 +108,7 @@ public class ${ClassName}Service {
             ${className}.setDel(Constants.DEL_STATUS_OK);
             log.info("新增${functionName},请求参数:" + JSON.toJSONString(${className}));
             return ${className}Mapper.insertSelective(${className}) > 0 ? AjaxResult.success() : AjaxResult.error();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return AjaxResult.error(e.getMessage());
         }
@@ -121,25 +121,20 @@ public class ${ClassName}Service {
      * @param ${className}
      * @return
      */
-    @Transactional(propagation= Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public AjaxResult update${ClassName}(${ClassName} ${className}) {
-        try{
-            #foreach($column in $columns)
-                #if($column.htmlType == "file" && $column.required)
-                    if (StringUtils.isEmpty(${className}.getAboutFile())) {
-                        return AjaxResult.error("${column.columnComment}不能为空");
-                    }
-                #end
-            #end
+        try {
+            checkEdit${ClassName}Params(${className}, Constants.SERVEICE_OPERATE_UPDATE);
             SysUser sysUser = ShiroUtils.getSysUser();
             //处理文件相关操作
             //1.先删除文件,在添加文件记录
             ${ClassName} ${className}One = ${className}Mapper.selectByPrimaryKey(${className}.getId());
             #foreach($column in $columns)
                 #if($column.htmlType == "file" && $column.required)
-                #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+                    #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
                     //获取最新${column.columnComment}字符串
-                    String $column.javaField = sysFileInfoService.serviceUpdateFile(sysUser,${className}One.get${AttrName}(),${className}.get${AttrName}());
+                    String $column.javaField = sysFileInfoService.serviceUpdateFile(sysUser, ${className}One.get${AttrName}(),${className}.get${AttrName}())
+                    ;
                 #end
             #end
 
@@ -165,8 +160,11 @@ public class ${ClassName}Service {
      * @param ids
      * @return
      */
-    @Transactional(propagation= Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public AjaxResult delete${ClassName}ByIds(String ids) {
+        if (StringUtils.isEmpty(ids) || Convert.toStrArray(ids).length == 0) {
+            throw new BusinessException("ids编号集合不能为空");
+        }
         SysUser sysUser = ShiroUtils.getSysUser();
         ${ClassName} ${className} =new ${ClassName}();
         ${className}.setDel(Constants.DEL_STATUS_NO);
@@ -183,8 +181,11 @@ public class ${ClassName}Service {
      * @param ${pkColumn.javaField}
      * @return
      */
-    @Transactional(propagation= Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public AjaxResult delete${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField}) {
+        if (StringUtils.isEmpty(id)) {
+            throw new BusinessException("id不能为空");
+        }
         SysUser sysUser = ShiroUtils.getSysUser();
         ${ClassName} ${className} =new ${ClassName}();
         ${className}.setId(${pkColumn.javaField});
@@ -219,4 +220,30 @@ public class ${ClassName}Service {
             return ztrees;
         }
     #end
+
+
+    //校验编辑时候参数是否合法
+    public void checkEdit${ClassName}Params(${ClassName} ${className},String code) {
+        //修改操作,要判断Id是否为空
+        if(code.equals(Constants.SERVEICE_OPERATE_UPDATE)){
+            if (StringUtils.isEmpty(etcTollDemo.getId())) {
+                throw new BusinessException("id不能为空");
+            }
+        }
+
+        #foreach($column in $columns)
+            #if($column.javaType == "String" && $column.required)
+                #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+                if (StringUtils.isEmpty(${className}.set$AttrName)){
+                throw new BusinessException("${column.columnComment}不能为空");
+            }
+            #end
+            #if($column.javaType != "String" && $column.required)
+                #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+                if (Objects.isNull(${className}.set$AttrName)){
+                throw new BusinessException("${column.columnComment}不能为空");
+            }
+            #end
+        #end
+    }
 }
